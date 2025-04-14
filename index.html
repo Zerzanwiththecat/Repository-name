@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-P4J7WW8L');</script>
+  <!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
+  <title>First Click Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      text-align: center;
+    }
+
+    #instruction {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    #image-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    #test-image {
+      max-width: 100%;
+      height: auto;
+      cursor: crosshair;
+    }
+
+    .click-marker {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background-color: red;
+      border-radius: 50%;
+      border: 2px solid white;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    #submit-button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P4J7WW8L"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <div id="image-container">
+    <img id="test-image" src="maket1.jpg" alt="Макет интерфейса">
+  </div>
+
+  <div>
+    <button id="submit-button" disabled>Отправить</button>
+  </div>
+
+  <script>
+    const image = document.getElementById('test-image');
+    const container = document.getElementById('image-container');
+    const submitButton = document.getElementById('submit-button');
+    let clickData = null;
+
+    image.addEventListener('click', function(e) {
+      if (clickData) return;
+
+      const rect = image.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      clickData = { x: Math.round(x), y: Math.round(y) };
+      console.log("Координаты первого клика:", clickData);
+
+      const marker = document.createElement('div');
+      marker.className = 'click-marker';
+      marker.style.left = `${x}px`;
+      marker.style.top = `${y}px`;
+      container.appendChild(marker);
+
+      submitButton.disabled = false;
+    });
+
+    submitButton.addEventListener('click', function() {
+      if (!clickData) return;
+
+      const formData = new URLSearchParams();
+      formData.append("x", clickData.x);
+      formData.append("y", clickData.y);
+
+      fetch("https://script.google.com/macros/s/AKfycbx4V_cYhkyeIbAg2vFts__OSqeGm9E30fGPoVk-spnLJEgF04tSrjEa-W4ROxjfx51kXA/exec", {
+        method: "POST",
+        body: formData
+      })
+      .then(() => {
+        alert("Клик отправлен в таблицу!");
+      })
+      .catch((error) => {
+        console.error("Ошибка отправки:", error);
+        alert("Произошла ошибка при отправке клика.");
+      });
+
+      console.log("Отправка данных:", clickData);
+
+      submitButton.disabled = true;
+      clickData = null;
+    });
+  </script>
+
+</body>
+</html>
