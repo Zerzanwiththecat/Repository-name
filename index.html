@@ -102,6 +102,7 @@
       const formData = new URLSearchParams();
       formData.append("x", clickData.x);
       formData.append("y", clickData.y);
+      formData.append("isInArea", clickData.isInArea)
 
       fetch("https://script.google.com/macros/s/AKfycbzwU5dQMYCgH7PYq-wDUT3DiRVa14cfXPCpwNsiXqaF/dev", {
         method: "POST",
